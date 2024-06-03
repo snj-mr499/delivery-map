@@ -1,0 +1,23 @@
+{
+  "name": "delivery-map",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "vue-cli-service serve"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "leaflet": "^1.9.4",
+    "vue": "^3.4.27",
+    "vue3-leaflet": "^1.0.48",
+    "vuetify": "^3.6.8"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-service": "^5.0.8"
+  }
+}
