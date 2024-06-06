@@ -16,7 +16,7 @@ export default {
     name: 'App',
     components: {
         AddressForm,
-        Map
+        Map,
     },
     setup() {
         const addresses = ref([]);

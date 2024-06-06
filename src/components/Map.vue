@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, nextTick } from 'vue';
 import { LMap, LTileLayer, LMarker } from 'vue3-leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -24,11 +24,22 @@ export default {
     },
     setup(props) {
         const mapContainer = ref(null);
-        const zoom = ref(2);
-        const center = ref([0, 0]);
+        const zoom = ref(6);
+        const center = ref([13.736717, 100.523186]);
         const url = ref('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
         const attribution = ref('&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
         const markers = ref([]);
+        let mapInstance = null
+
+        const initializeMapInstance = () => {
+            if (mapContainer.value && mapContainer.value.mapObject) {
+                mapInstance = mapContainer.value.mapObject
+            }
+        };
+
+        onMounted(() => {
+            initializeMapInstance()
+        });
 
         const geocodeAddress = async (address) => {
             try {
@@ -47,15 +58,28 @@ export default {
         };
 
         const updateMarkers = async (newAddresses) => {
+            markers.value = []
+            let lastCoordinates = null
             for (let address of newAddresses) {
                 const coordinates = await geocodeAddress(address);
                 if (coordinates) {
                     markers.value.push({ address, coordinates });
-                    center.value = coordinates; // Center the map to the new marker
-                    zoom.value = 15; // Adjust the zoom level as needed
+                    lastCoordinates = coordinates; // Center the map to the new marker
+                    // zoom.value = 15; // Adjust the zoom level as needed
                 } else {
                     console.warn(`Could not geocode address: ${address}`);
                 }
+            }
+            if (lastCoordinates) {
+                center.value = lastCoordinates
+                zoom.value = 15
+                await nextTick()
+                if (mapInstance) {
+                    mapInstance.setView(lastCoordinates, 15)
+                } else {
+                    console.warn('Map instance is not available yet')
+                }
+                
             }
         };
 
